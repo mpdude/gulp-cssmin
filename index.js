@@ -8,7 +8,7 @@ var filesize = require('filesize');
 var tempWrite = require('temp-write');
 
 
-module.exports = function (options) {
+module.exports = function (opts) {
 	return map(function (file, cb) {
 		if (file.isNull()) {
 			return cb(null, file);
@@ -33,7 +33,12 @@ module.exports = function (options) {
 					return cb(new gutil.PluginError('gulp-cssmin', err));
 				}
 
-				options = options || {};
+				var options;
+				options = opts || {};
+				
+				if (typeof options === "function") {
+					options = options(file);
+				}
 
 				fs.readFile(tempFile, { encoding : 'UTF-8'}, function(err, data) {
 					if (err) {
